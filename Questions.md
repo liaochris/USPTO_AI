@@ -1,0 +1,48 @@
+﻿**Questions (that can drive a paper)**
+
+- General
+  - What % (and # count) of patents are AI-based?
+  - What is the distribution across the 8 categories? How do they differ? What about within the patent clusters
+    - Are there differences in terms of geography? How do these relate to the Kerr hypothesis?
+- USPTO technical guide questions
+  - Can we document the move of AI researchers from academia towards industry (<https://highered.ipums.org/highered/index.shtml>) 
+  - How has this affected the rate of AI invention/innovation? Has this changed the way research is conducted (academics and corporations conduct research differently)? What about the field of study?
+    - Changes in patents should already be reflected in USPTO database
+  - **Exogenous shock:** Supreme Court (starting with Bilski v. Kappos in 2010) reduced eligibility of inventions that contain abstract ideas, laws of nature and products of nature
+    - What was the impact?
+  - How can we identify the causal effect of AI investment on companies	
+    - Disentangle the decision to invest in AI from other time varying unobserved features of firms and industries that also affect outcomes?
+- Bill Kerr influenced - AI has both hardware and software components as well so it will be interesting to see whether his observations still hold
+  - Location
+    - Are AI companies concentrated in many, or a few areas? Which ones are the new risers? Old-timers? What are the differences between them?
+    - Are AI patents moving in a particular direction (big cities vs. tech clusters)
+  - Corporation characteristics
+    - How much of AI’s growth is driven by venture capital investment?
+    - Is patenting becoming more concentrated because individuals are being attracted to certain areas?
+    - How have AI companies benefited from immigrants?
+  - Patent-specific
+    - Have AI patents grown increasingly complex? 
+    - Have AI patents become increasingly interdependent?
+- Syverson et. al influenced - what are the narratives and facts surrounding AI and productivity?
+  - False Hopes: 
+    - Is AI only concentrated in a few sectors that capture people’s attention? Does AI not perform as well as advertised?
+  - Mismeasurement: 
+    - Is AI making new fields much more efficient? Or is it targeting already high-productivity fields?
+  - Concentrated Benefits:
+    - Are AI developments concentrated in zero-sum areas? 
+  - Complements & Stock:
+    - What are the complements of AI technologies? Have these developed - and how do these differ across the 8 categories?
+    - Are there particular categories that are already contributing to innovation?
+    - Do companies develop AI within a particular sector or do they develop complements?
+    - How has AI growth changed over time? In particular sectors?
+  - How can we show that AI is a GPT?
+  - What are the characteristics of firms who develop AI? 
+- Rebecca Henderson’s comments-influenced 
+- Is the lack of productivity growth caused by AI a function of organizational inertia? Is it caused by a lack of complementary technologies (ie: do we need certain platforms for AI to be profitable enough to be developed/used?) What about a combination of both?
+  - Henderson thinks former is understated, Syverson emphasizes mostly the latter
+- What are the advantages granted to new entrants, given the organizational barriers on AI?
+  - How do we measure intangible assets related to AI?
+  - How do we measure changes in work, education, etc?
+  - How does the fact that many companies provide services, rather than develop their own B2C products impact this?
+
+
