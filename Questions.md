@@ -38,7 +38,6 @@
   - How can we show that AI is a GPT?
   - What are the characteristics of firms who develop AI? 
 - Rebecca Henderson’s comments-influenced 
-- Complements & Stock:
   - Is the lack of productivity growth caused by AI a function of organizational inertia? Is it caused by a lack of complementary technologies (ie: do we need certain platforms for AI to be profitable enough to be developed/used?) What about a combination of both?
   - Henderson thinks former is understated, Syverson emphasizes mostly the latter
 - What are the advantages granted to new entrants, given the organizational barriers on AI?
