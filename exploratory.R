@@ -1,0 +1,37 @@
+# Import libraries
+library(data.table)
+library(readr)
+library(dplyr)
+library(haven)
+library(ggfittext)
+library(doMC)
+library(future)
+library(vroom)
+library(RCurl)
+library(haven)
+library(ggplot2)
+library(zoo)
+library(collections)
+library(glue)
+library(stringr)
+library(tidyr)
+library(openxlsx)
+library(parallel)
+library(doParallel)
+
+`%ni%` <- Negate(`%in%`)
+
+# home directory
+#setwd("~/Google Drive/Non-Academic Work/Research/Traina/Post-2022/USPTO_AI/")
+# RCC directory
+#setwd("~/scratch-midway2/USPTO_AI")
+
+ai_data_filt <- fread("cleaned/ai_predictions.csv")
+app_data_filt <- fread(, "cleaned/ai_app.csv")
+citation_data_filt <- fread("cleaned/ai_citation.csv")
+location_data_filt <- fread("cleaned/ai_location.csv")
+patent_data_filt <- fread("cleaned/ai_patent.csv")
+rawassignee_data_filt <- fread("cleaned/ai_rawassignee.csv")
+rawassignee_data_filt_p <- fread("cleaned/ai_rawassignee_p.csv")
+rawlocation_data_filt <- fread("cleaned/ai_rawlocation.csv")
+rawinventor_data_filt <- fread("cleaned/ai_rawinventor.csv")
