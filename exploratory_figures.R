@@ -165,7 +165,7 @@ dev.off()
 ai_assignee_type[, prop := prop.table(`N`), by = "pub_y"]
 jpeg("figures/exploratory/prop_assgn.jpeg", width = 800, height = 800)
 ai_assignee_type[`assignee type` %in% c(2, 3)]  %>%
-  ggplot(aes(x = pub_y, y = prop, color = `assignee type`, group = `assignee type`)) +
+  ggplot(aes(x = pub_y, y = prop, color = `assignee name`, group = `assignee name`)) +
   geom_line() +
   ggtitle("Proportion of AI Patents Published Grouped by Assignee Type and Year") +
   labs(y= "Proportion of AI Patents Published", x = "Publication Year", color = "Assignee Type") +
@@ -182,7 +182,7 @@ ai_assignee_type_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   assgn_type[, linesize := type == "any_ai"]
   assgn_type
 }
-jpeg("figures/exploratory/prop_assgn_US.jpeg", width = 800, height = 800)
+jpeg("figures/exploratory/prop_assgn_cat.jpeg", width = 800, height = 800)
 ai_assignee_type_g[`assignee type` == 2 & pub_y >= 1990] %>%
   ggplot(aes(x = pub_y, y = prop, color = `type`, group = `type`)) +
   geom_line(aes(size = linesize)) +
