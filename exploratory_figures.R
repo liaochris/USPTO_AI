@@ -152,7 +152,7 @@ ai_assignee_type[`assignee type` %in% c(2, 3),
                  `assignee name`:= ifelse(`assignee type` == 2, 'US Company or Corporation', 
                                           'Foreign Company or Corporation')]
 
-jpeg("figures/exploratory/sum_assgn", width = 800, height = 800)
+jpeg("figures/exploratory/sum_assgn.jpeg", width = 800, height = 800)
 ai_assignee_type[`assignee type` %in% c(2, 3)] %>% 
   ggplot(aes(x = pub_y, y = N, color = `assignee name`, group = `assignee name`)) +
   geom_line() +
@@ -163,7 +163,7 @@ ai_assignee_type[`assignee type` %in% c(2, 3)] %>%
 dev.off()
 
 ai_assignee_type[, prop := prop.table(`N`), by = "pub_y"]
-jpeg("figures/exploratory/prop_assgn", width = 800, height = 800)
+jpeg("figures/exploratory/prop_assgn.jpeg", width = 800, height = 800)
 ai_assignee_type[`assignee type` %in% c(2, 3)]  %>%
   ggplot(aes(x = pub_y, y = prop, color = `assignee type`, group = `assignee type`)) +
   geom_line() +
@@ -182,7 +182,7 @@ ai_assignee_type_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   assgn_type[, linesize := type == "any_ai"]
   assgn_type
 }
-jpeg("figures/exploratory/prop_assgn_US", width = 800, height = 800)
+jpeg("figures/exploratory/prop_assgn_US.jpeg", width = 800, height = 800)
 ai_assignee_type_g[`assignee type` == 2 & pub_y >= 1990] %>%
   ggplot(aes(x = pub_y, y = prop, color = `type`, group = `type`)) +
   geom_line(aes(size = linesize)) +
@@ -216,7 +216,7 @@ shareoftop <- function(n) {
 }
 # share of top 10,20,30 has decreased in recent years
 #shareoftop(10)
-jpeg("figures/exploratory/prop_assgn_t20", width = 800, height = 800)
+jpeg("figures/exploratory/prop_assgn_t20.jpeg", width = 800, height = 800)
 shareoftop(20)
 dev.off()
 #shareoftop(30)
@@ -239,7 +239,7 @@ ai_share20_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   ai_share[, linesize := type == "any_ai"]
   ai_share
 }
-jpeg("figures/exploratory/prop_assgn_t20_cat", width = 800, height = 800)
+jpeg("figures/exploratory/prop_assgn_t20_cat.jpeg", width = 800, height = 800)
 ai_share20_g %>%
   ggplot(aes(x = pub_y, y = mean_top_20, color = type, group = type)) +
   geom_line(aes(size = linesize)) +
@@ -258,7 +258,7 @@ m_inventor <- ai_patents_clean[, .(mean_inventor = mean(num_inventor, na.rm = TR
 m_inventor$top_20 <- "ALL"
 # large companies have more inventors
 # as time has passed the number of inventors has increased
-jpeg("figures/exploratory/mean_inv_t20", width = 800, height = 800)
+jpeg("figures/exploratory/mean_inv_t20.jpeg", width = 800, height = 800)
 rbind(m_inventor,
       ai_patents_clean[, .(mean_inventor = mean(num_inventor, na.rm = TRUE)), 
                        by = c("top_20", "pub_y")]) %>%
@@ -281,7 +281,7 @@ m_inventor_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   m_inventors[, linesize := type == "any_ai"]
   m_inventors
 }
-jpeg("figures/exploratory/meandif_inv_t20", width = 800, height = 800)
+jpeg("figures/exploratory/meandif_inv_t20.jpeg", width = 800, height = 800)
 m_inventor_g %>%
   ggplot(aes(x = pub_y, y = top20_dif, color = type, group = type)) +
   geom_line(aes(size = linesize)) +

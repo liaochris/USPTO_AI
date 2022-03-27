@@ -47,6 +47,8 @@ custom_cols_9 <- c("#FF0000", custom_cols_8)
 # prop published by new entrants (<5 years)
 ai_patents_clean[, `first_year`:= min(pub_y), by = `organization_lower`]
 ai_patents_clean[, `early_stage_pat`:= pub_y <= `first_year`+5]
+
+jpeg("figures/competition/pat_entr.jpeg", width = 800, height = 800)
 entrance_p <- ai_patents_clean[, .(mean_pat = mean(early_stage_pat)), by = pub_y] %>%
   ggplot(aes(x = pub_y, y = mean_pat)) +
   geom_line() + 
@@ -56,7 +58,8 @@ entrance_p <- ai_patents_clean[, .(mean_pat = mean(early_stage_pat)), by = pub_y
   theme(legend.title = element_text(colour="black", size=10, face="bold"),
         plot.title = element_text(hjust = 0.5, size = 15)) +
   guides(size = "none")
-ggsave("figures/competition/pat_entr.jpeg", entrance_p, width = 800, height = 800, units = "px")
+entrance_p
+dev.off()
 
 # By AI Type
 ai_new_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
@@ -65,6 +68,7 @@ ai_new_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   ai_new[, linesize := type == "any_ai"]
   ai_new
 }
+jpeg("figures/competition/pat_entr_cat.jpeg", width = 800, height = 800)
 entrance_p_g <- ai_new_g %>%
   ggplot(aes(x = pub_y, y = mean_pat, color = type, group = type)) +
   geom_line(aes(size = linesize)) +
@@ -76,10 +80,11 @@ entrance_p_g <- ai_new_g %>%
   theme(legend.title = element_text(colour="black", size=7, face="bold"),
         plot.title = element_text(hjust = 0.5, size = 15)) +
   guides(size = "none")
-ggsave("figures/competition/pat_entr_cat.jpeg", entrance_p_g, width = 800, height = 800, units = "px")
-
+entrance_p_g
+dev.off()
 
 # number of new publishers each year
+jpeg("figures/competition/pat_entr_cnt.jpeg", width = 800, height = 800)
 incoming_cnt <- unique(ai_patents_clean[,c("organization_lower", "first_year")])[, .N, by = first_year] %>%
   ggplot(aes(x = first_year, y = N)) +
   geom_line() + 
@@ -89,7 +94,8 @@ incoming_cnt <- unique(ai_patents_clean[,c("organization_lower", "first_year")])
   theme(legend.title = element_text(colour="black", size=10, face="bold"),
         plot.title = element_text(hjust = 0.5, size = 15)) +
   guides(size = "none")
-ggsave("figures/competition/pat_entr_cnt.jpeg", incoming_cnt, width = 800, height = 800, units = "px")
+incoming_cnt
+dev.off()
 
 # By AI Type
 incoming_cnt_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
@@ -100,6 +106,7 @@ incoming_cnt_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   incoming_cnts
 }
 
+jpeg("figures/competition/pat_entr_cnt_cat.jpeg", width = 800, height = 800)
 incoming_cnt_p <- incoming_cnt_g %>%
   ggplot(aes(x = first_year, y = N, color = type, group = type)) +
   geom_line(aes(size = linesize)) +
@@ -111,8 +118,8 @@ incoming_cnt_p <- incoming_cnt_g %>%
   theme(legend.title = element_text(colour="black", size=7, face="bold"),
         plot.title = element_text(hjust = 0.5, size = 15)) +
   guides(size = "none")
-ggsave("figures/competition/pat_entr_cnt_cat.jpeg", incoming_cnt_p, width = 800, height = 800, units = "px")
-
+incoming_cnt_p
+dev.off()
 ########################################################################################## 
 ################################## Complements Analysis ##################################
 ##########################################################################################
