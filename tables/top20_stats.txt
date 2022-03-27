@@ -1,0 +1,25 @@
+
+===========================================================================
+                  Organization                 Entry Year Number of Patents
+---------------------------------------------------------------------------
+1  international business machines corporation    1976         55,438      
+2             microsoft corporation               1988         16,458      
+3                  google inc.                    2004          9,350      
+4      microsoft technology licensing, llc        2015          8,849      
+5               intel corporation                 1977          8,668      
+6           amazon technologies, inc.             2006          7,460      
+7         samsung electronics co., ltd.           1989          7,344      
+8            canon kabushiki kaisha               1976          6,765      
+9                  apple inc.                     2007          5,665      
+10              sony corporation                  1981          5,583      
+11  hewlett-packard development company, l.p.     2003          5,282      
+12      oracle international corporation          2002          5,169      
+13               fujitsu limited                  1977          4,436      
+14          general electric company              1976          4,375      
+15            qualcomm incorporated               1992          4,128      
+16              xerox corporation                 1976          3,904      
+17                hitachi, ltd.                   1976          3,796      
+18           cisco technology, inc.               1999          3,744      
+19          kabushiki kaisha toshiba              1986          3,659      
+20                 google llc                     2017          3,652      
+---------------------------------------------------------------------------
