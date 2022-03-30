@@ -45,16 +45,8 @@ custom_cols_9 <- c("#FF0000", custom_cols_8)
 ################################## Competition Analysis ##################################
 ########################################################################################## 
 # prop published by new entrants (<5 years)
-ai_patents_clean[, `first_year`:= min(pub_y), by = `organization_lower`]
+ai_patents_clean[, `first_year`:= min(pub_y), by = `assignee_id`]
 ai_patents_clean[, `early_stage_pat`:= pub_y <= `first_year`+5]
-
-head(ai_patents_clean[, .N , by = c("organization_lower", "first_year")][order(-N)], 20)
-
-ai_patents_clean[organization_lower == "google llc", 
-                 organization_lower:= 'google inc.']
-ai_patents_clean[organization_lower == "microsoft technology licensing, llc", 
-                 organization_lower:= 'microsoft corporation']
-
 
 jpeg("figures/competition/pat_entr.jpeg", width = 800, height = 800)
 entrance_p <- ai_patents_clean[, .(mean_pat = mean(early_stage_pat)), by = pub_y] %>%
@@ -93,7 +85,7 @@ dev.off()
 
 # number of new publishers each year
 jpeg("figures/competition/pat_entr_cnt.jpeg", width = 800, height = 800)
-incoming_cnt <- unique(ai_patents_clean[,c("organization_lower", "first_year")])[, .N, by = first_year] %>%
+incoming_cnt <- unique(ai_patents_clean[,c("assignee_id", "first_year")])[, .N, by = first_year] %>%
   ggplot(aes(x = first_year, y = N)) +
   geom_line() + 
   ggtitle("New AI Patent-Publishing Institutions") +
@@ -108,7 +100,7 @@ dev.off()
 # By AI Type
 incoming_cnt_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   incoming_cnts <- unique(ai_patents_clean[get(i) == 1,
-                                           c("organization_lower", "first_year")])[, .N, by = first_year]
+                                           c("assignee_id", "first_year")])[, .N, by = first_year]
   incoming_cnts$type <- gsub("predict50_", "", i)
   incoming_cnts[, linesize := type == "any_ai"]
   incoming_cnts

@@ -196,16 +196,16 @@ ai_assignee_type_g[`assignee type` == 2 & pub_y >= 1990] %>%
 dev.off()
 
 #reformatting names
-ai_patents_clean[, organization_lower := tolower(organization)]
-top20_counts <- ai_patents_clean[, .N, by = "organization_lower"][order(-N)][1:20]
+#ai_patents_clean[, organization_lower := tolower(organization)]
+top20_counts <- ai_patents_clean[, .N, by = "assignee_id"][order(-N)][1:20]
 top20_counts
-ai_patents_clean[,top_20:=organization_lower %in% top20_counts$organization_lower]
+ai_patents_clean[,top_20:=assignee_id %in% top20_counts$assignee_id]
 
 # top n companies by parent count
 shareoftop <- function(n) {
-  top_counts <- ai_patents_clean[, .N, by = "organization_lower"][order(-N)][1:n]
+  top_counts <- ai_patents_clean[, .N, by = "assignee_id"][order(-N)][1:n]
   ai_patents_clean_cop <- ai_patents_clean
-  ai_patents_clean_cop[,top_n:=organization_lower %in% top_counts$organization_lower]
+  ai_patents_clean_cop[,top_n:=assignee_id %in% top_counts$assignee_id]
   ai_patents_clean_cop[, .(mean_top_n = mean(top_n)), by = "pub_y"] %>%
     ggplot(aes(x = pub_y, y = mean_top_n)) +
     geom_line() +
@@ -222,18 +222,22 @@ dev.off()
 #shareoftop(30)
 
 # descriptive statistics of top 20 institutions
-entry_year <- ai_patents_clean[`organization_lower` %in% top20_counts$organization_lower,
-                               .("Entry Year" = min(pub_y)), by = "organization_lower"]
+entry_year <- ai_patents_clean[`assignee_id` %in% top20_counts$assignee_id,
+                               .("Entry Year" = min(pub_y)), by = "assignee_id"]
 top20_orgs <- merge.data.table(entry_year, top20_counts)[order(-N)]
-colnames(top20_orgs)[c(1,3)] <- c("Organization", "Number of Patents")
+colnames(top20_orgs)[c(1,3)] <- c("Assignee ID", "Number of Patents")
 top20_orgs[,`Entry Year` := as.character(`Entry Year`)]
-stargazer(top20_orgs, summary = FALSE, out = "tables/top20_stats.txt", type = "text")
+id_name <- unique(ai_patents_clean[,c("assignee_id", "organization_lower")])
+id_name <- id_name[!duplicated(id_name, by = c("assignee_id"))]
+top20_orgs_complete <- merge.data.table(top20_orgs, id_name, by.x = c("Assignee ID"), by.y = c("assignee_id"))
+top20_orgs_complete <- top20_orgs_complete[order(-`Number of Patents`)]
+stargazer(top20_orgs_complete, summary = FALSE, out = "tables/top20_stats.txt", type = "text")
 
 # distribution of top n companies by ai patent type
 ai_share20_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
-  top_counts <- ai_patents_clean[get(i) == 1, .N, by = "organization_lower"][order(-N)][1:20]
-  ai_share <- ai_patents_clean[,.(mean_top_20 = mean(organization_lower
-                                                     %in% top_counts$organization_lower)),
+  top_counts <- ai_patents_clean[get(i) == 1, .N, by = "assignee_id"][order(-N)][1:20]
+  ai_share <- ai_patents_clean[,.(mean_top_20 = mean(assignee_id
+                                                     %in% top_counts$assignee_id)),
                                by = "pub_y"]
   ai_share$type <- gsub("predict50_", "", i)
   ai_share[, linesize := type == "any_ai"]
