@@ -274,6 +274,17 @@ rbind(m_inventor,
         plot.title = element_text(hjust = 0.5, size = 15))
 dev.off()
 
+# mean number of claims by company type
+jpeg("figures/exploratory/mean_claim_t20.jpeg", width = 800, height = 800)
+ai_patents_clean[,.(mean_claim = mean(num_claims,na.rm = TRUE)), by = c('pub_y', 'top_20')][order(pub_y)] %>%
+  ggplot(aes(x = pub_y, y = mean_claim, color = top_20, group = top_20)) +
+  geom_line() + 
+  ggtitle("Mean Number of Claims per AI Patent by Top 20 Status") +
+  labs(y= "Mean Number of Claims", x = "Publication Year", color = "Top 20 Company") +
+  theme(legend.title = element_text(colour="black", size=10, face="bold"),
+        plot.title = element_text(hjust = 0.5, size = 15))
+dev.off()
+
 # mean number of inventors over time for patent types
 m_inventor_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   m_inventors <- 
