@@ -62,40 +62,6 @@ entrance_p <- ai_patents_clean[, .(mean_pat = mean(early_stage_pat)), by = pub_y
 entrance_p
 dev.off()
 
-# proportion published by company age
-jpeg("figures/competition/pat_prop_compage.jpeg", width = 800, height = 800)
-ai_pat_stages <- ai_patents_clean[, .N, by = c("pub_y", "`Company Decade`")]
-ai_pat_stages[,mean_pat := N/sum(N), by = "pub_y"]
-ai_pat_stages[, `Company Decade` := as.factor(`Company Decade`)]
-many_stage <- ai_pat_stages %>%
-  ggplot(aes(x = pub_y, y = mean_pat, color = `Company Decade`, group = `Company Decade`)) +
-  geom_line() + 
-  ggtitle("Prop Published by Institutions In their N-th Decade") +
-  labs(y= "Prop of AI Patents Published", 
-       x = "Publication Year") +
-  theme(legend.title = element_text(colour="black", size=10, face="bold"),
-        plot.title = element_text(hjust = 0.5, size = 15)) +
-  guides(size = "none")
-many_stage
-dev.off()
-
-# patent-assignee ratio by age of company
-jpeg("figures/competition/pat_assgn_ratio_compage.jpeg", width = 800, height = 800)
-ai_stage_means <- ai_patents_clean[, .N, by = c("pub_y", "`Company Decade`", "assignee_id")]
-ai_stage_means_uq <- unique(ai_stage_means[,mean_N := mean(N), by = c("pub_y", "`Company Decade`")][,c("pub_y","`Company Decade`","mean_N")])
-ai_stage_means_uq[, `Company Decade` := as.factor(`Company Decade`)]
-mean_stage <- ai_stage_means_uq %>%
-  ggplot(aes(x = pub_y, y = mean_N, color = `Company Decade`, group = `Company Decade`)) +
-  geom_line() + 
-  ggtitle("Patent-Assignee Ratio Dependent on Decade") +
-  labs(y= "Patent-Assignee Ratio", 
-       x = "Publication Year") +
-  theme(legend.title = element_text(colour="black", size=10, face="bold"),
-        plot.title = element_text(hjust = 0.5, size = 15)) +
-  guides(size = "none")
-mean_stage
-dev.off()
-
 
 # By AI Type
 ai_new_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
@@ -155,6 +121,41 @@ incoming_cnt_p <- incoming_cnt_g %>%
         plot.title = element_text(hjust = 0.5, size = 15)) +
   guides(size = "none")
 incoming_cnt_p
+dev.off()
+
+
+# proportion published by company age
+jpeg("figures/competition/pat_prop_compage.jpeg", width = 800, height = 800)
+ai_pat_stages <- ai_patents_clean[, .N, by = c("pub_y", "`Company Decade`")]
+ai_pat_stages[,mean_pat := N/sum(N), by = "pub_y"]
+ai_pat_stages[, `Company Decade` := as.factor(`Company Decade`)]
+many_stage <- ai_pat_stages %>%
+  ggplot(aes(x = pub_y, y = mean_pat, color = `Company Decade`, group = `Company Decade`)) +
+  geom_line() + 
+  ggtitle("Prop Published by Institutions In their N-th Decade") +
+  labs(y= "Prop of AI Patents Published", 
+       x = "Publication Year") +
+  theme(legend.title = element_text(colour="black", size=10, face="bold"),
+        plot.title = element_text(hjust = 0.5, size = 15)) +
+  guides(size = "none")
+many_stage
+dev.off()
+
+# patent-assignee ratio by age of company
+jpeg("figures/competition/pat_assgn_ratio_compage.jpeg", width = 800, height = 800)
+ai_stage_means <- ai_patents_clean[, .N, by = c("pub_y", "Company Decade", "assignee_id")]
+ai_stage_means_uq <- unique(ai_stage_means[,mean_N := mean(N), by = c("pub_y", "Company Decade")][,c("pub_y","Company Decade","mean_N")])
+ai_stage_means_uq[, `Company Decade` := as.factor(`Company Decade`)]
+mean_stage <- ai_stage_means_uq %>%
+  ggplot(aes(x = pub_y, y = mean_N, color = `Company Decade`, group = `Company Decade`)) +
+  geom_line() + 
+  ggtitle("Patent-Assignee Ratio Dependent on Decade") +
+  labs(y= "Log Scale Patent-Assignee Ratio", 
+       x = "Publication Year") +
+  theme(legend.title = element_text(colour="black", size=10, face="bold"),
+        plot.title = element_text(hjust = 0.5, size = 15)) +
+  guides(size = "none") + scale_y_continuous(trans = 'log2')
+mean_stage
 dev.off()
 
 # analyze competition
