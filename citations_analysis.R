@@ -30,12 +30,12 @@ library(doParallel)
 
 # import data
 ai_citations <- fread("cleaned/ai_citation.csv")
+ai_citations <- ai_citations[sample(nrow(ai_citations), 1000000)]
 ai_citations <- ai_citations[str_length(date)!=0]
-#ai_citations <- ai_citations[sample(nrow(ai_citations), 1000000)]
 
 ai_patents <- fread("merged/ai_patents.csv")
 ai_predictions <- fread("cleaned/ai_predictions.csv")[flag_patent == 1]
-#ai_categories <- fread("data/cpc_current.tsv")
+
 # clean data, define important variables
 ai_patents_clean <- ai_patents[,-c("rawlocation_id", "location_id")]
 ai_cols <- colnames(ai_patents_clean)[grepl("predict50",colnames(ai_patents_clean))]
@@ -192,3 +192,4 @@ mean_cit_age_g[pub_y >= 1990] %>%
         plot.title = element_text(hjust = 0.5, size = 15)) +
   guides(size = "none")
 dev.off()
+
