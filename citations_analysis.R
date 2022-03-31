@@ -73,7 +73,7 @@ mean_patent_type_stats <- function(col, graphtype) {
           plot.title = element_text(hjust = 0.5, size = 15)) +
     guides(size = "none")
 }
-jpeg("figures/citations/mean_cit_cat.jpeg", width = 300, height = 300)
+jpeg("figures/citations/mean_cit_cat.jpeg", width = 500, height = 500)
 mean_patent_type_stats("citations", "Citations")
 dev.off()
 
@@ -108,7 +108,7 @@ mean_ai_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   mean_ai
 }
 # Graph of the proportion of citations that are AI
-jpeg("figures/citations/mean_cit_ai.jpeg", width = 300, height = 300)
+jpeg("figures/citations/mean_cit_ai.jpeg", width = 500, height = 500)
 mean_ai_g %>%
   ggplot(aes(x = pub_y, y = mean_nonai_cit, color = type, group = type)) +
   geom_line(aes(size = linesize)) +
@@ -156,7 +156,7 @@ mean_cit_dif_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   mean_cit_dif[, linesize := type == "any_ai"]
   mean_cit_dif
 }
-jpeg("figures/citations/mean_cit_age.jpeg", width = 300, height = 300)
+jpeg("figures/citations/mean_cit_age.jpeg", width = 500, height = 500)
 mean_cit_dif_g[pub_y >= 1990] %>%
   ggplot(aes(x = pub_y, y = mean_time_dif, color = type, group = type)) +
   geom_line(aes(size = linesize)) +
@@ -179,7 +179,7 @@ mean_cit_age_g <- foreach(i = ai_cols, .combine = 'rbind') %do% {
   mean_cit_dif
 }
 
-jpeg("figures/citations/mean_cit_yr.jpeg", width = 300, height = 300)
+jpeg("figures/citations/mean_cit_yr.jpeg", width = 500, height = 500)
 mean_cit_age_g[pub_y >= 1990] %>%
   ggplot(aes(x = pub_y, y = mean_cit_y, color = type, group = type)) +
   geom_line(aes(size = linesize)) + 
