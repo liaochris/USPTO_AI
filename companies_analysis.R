@@ -131,6 +131,7 @@ ai_share_g <- foreach(i = unique(ai_patents_clean$outpaced_ind), .combine = 'rbi
   ai_share
 }
 
+
 jpeg("figures/companies/prop_t20_growth_type_market.jpeg", width = 500, height = 500)
 ai_share_g %>%
   ggplot(aes(x = pub_y, y = prop_market, group = outpaced_ind, fill = outpaced_ind)) +
@@ -179,4 +180,140 @@ ai_share_cat %>%
   guides(size = "none")
 dev.off()
 
+# mean patent fields in top 20 companies
+jpeg("figures/companies/mean_fields_t20.jpeg", width = 500, height = 500)
+ai_cats_t20 <- ai_patents_clean[assignee_id %in% top20_counts, lapply(.SD, function(x) any(x == 1)), 
+                                .SDcols =  pred_cols, by = c("assignee_id", "pub_y")]
+ai_cats_t20[,num_techs := rowSums(.SD),.SDcols = pred_cols]
+ai_cats_t20[,.(mean_tech = mean(num_techs)), by = pub_y][order(pub_y)] %>%
+  ggplot(aes(x = pub_y, y = mean_tech)) +
+  geom_line() + 
+  ggtitle("Mean Number of AI Fields Top 20 Companies Publish In") +
+  labs(y= "PMean Number of AI Fields", x = "Publication Year") +
+  scale_colour_manual(values = rev(custom_cols_9)) +
+  scale_size_manual(values = c("TRUE" = 1, "FALSE" = .4)) +
+  theme(legend.title = element_text(colour="black", size=10, face="bold"),
+        plot.title = element_text(hjust = 0.5, size = 15)) +
+  guides(size = "none")
+dev.off()
 
+# mean patent fields in non-top 20 companies
+jpeg("figures/companies/mean_fields_not_t20.jpeg", width = 500, height = 500)
+ai_cats_nt20 <- ai_patents_clean[assignee_id %ni% top20_counts, lapply(.SD, function(x) any(x == 1)), 
+                                 .SDcols =  pred_cols, by = c("assignee_id", "pub_y")]
+ai_cats_nt20[,num_techs := rowSums(.SD),.SDcols = pred_cols]
+ai_cats_nt20[,.(mean_tech = mean(num_techs)), by = pub_y][order(pub_y)] %>%
+  ggplot(aes(x = pub_y, y = mean_tech)) +
+  geom_line() + 
+  ggtitle("Mean Number of AI Fields None-Top 20 Companies Publish In") +
+  labs(y= "Proportion of Patent Market", x = "Publication Year", fill = "Company Category") +
+  scale_colour_manual(values = rev(custom_cols_9)) +
+  scale_size_manual(values = c("TRUE" = 1, "FALSE" = .4)) +
+  theme(legend.title = element_text(colour="black", size=10, face="bold"),
+        plot.title = element_text(hjust = 0.5, size = 15)) +
+  guides(size = "none")
+dev.off()
+
+top20_pattypes <- melt(ai_patents_clean[assignee_id %in% top20_counts, lapply(.SD, function(x) mean(x)),
+                                        .SDcols =  pred_cols, by = "pub_y"],
+                       id.vars = "pub_y", variable.name = "type", value.name = "prop_patents")
+top20_pattypes[, type := gsub("predict50_", "", type)]
+
+jpeg("figures/companies/t20_ai_type_dist.jpeg", width = 500, height = 500)
+top20_pattypes %>% 
+  ggplot(aes(x = pub_y, y = prop_patents, group = type, color = type)) +
+  geom_line() + 
+  ggtitle("Proportion of Top 20 Company Patents by AI Type") +
+  labs(y= "Proportion by AI Type", x = "Publication Year", color = "AI Type") +
+  scale_colour_manual(values = rev(custom_cols_9)) +
+  scale_size_manual(values = c("TRUE" = 1, "FALSE" = .4)) +
+  theme(legend.title = element_text(colour="black", size=10, face="bold"),
+        plot.title = element_text(hjust = 0.5, size = 15)) +
+  guides(size = "none")
+dev.off()
+
+ntop20_pattypes <- melt(ai_patents_clean[assignee_id %ni% top20_counts, lapply(.SD, function(x) mean(x)),
+                                        .SDcols =  pred_cols, by = "pub_y"],
+                       id.vars = "pub_y", variable.name = "type", value.name = "prop_patents")
+ntop20_pattypes[, type := gsub("predict50_", "", type)]
+jpeg("figures/companies/nt20_ai_type_dist.jpeg", width = 500, height = 500)
+ntop20_pattypes %>% 
+  ggplot(aes(x = pub_y, y = prop_patents, group = type, color = type)) +
+  geom_line() + 
+  ggtitle("Proportion of None-Top 20 Company Patents by AI Type") +
+  labs(y= "Proportion of Patent Market", x = "Publication Year", color = "AI Type") +
+  scale_colour_manual(values = rev(custom_cols_9)) +
+  scale_size_manual(values = c("TRUE" = 1, "FALSE" = .4)) +
+  theme(legend.title = element_text(colour="black", size=10, face="bold"),
+        plot.title = element_text(hjust = 0.5, size = 15)) +
+  guides(size = "none")
+dev.off()
+
+# most companies are small 
+small_ai_comps <- ai_patents_clean[,.N, by = c("assignee_id", "pub_y")][N==1]
+all_comp <- ai_patents_clean[,.(.N), by = c("pub_y", "assignee_id")][,.(.N, type = "all companies"), 
+                                                                     by = "pub_y"]
+jpeg("figures/companies/1patent_companies.jpeg", width = 500, height = 500)
+rbind(all_comp, small_ai_comps[,.(.N, type = "1 patent company"), by = "pub_y"]) %>% 
+  ggplot(aes(x = pub_y, y = N, color = type, group = type)) +
+  geom_line() + 
+  ggtitle("Number of Companies Publishing AI Patents") +
+  labs(y= "Number of Companies", x = "Publication Year", color = "Company Type") +
+  scale_colour_manual(values = rev(custom_cols_9)) +
+  scale_size_manual(values = c("TRUE" = 1, "FALSE" = .4)) +
+  theme(legend.title = element_text(colour="black", size=10, face="bold"),
+        plot.title = element_text(hjust = 0.5, size = 15)) +
+  guides(size = "none")
+dev.off()
+
+small_ai_comps$size <- "1 patent/year company"
+ai_patents_clean_size <- merge.data.table(ai_patents_clean, small_ai_comps[,-"N"], by = c("assignee_id", "pub_y"),
+                                          all.x = TRUE)
+ai_patents_clean_size[is.na(size),size:="not 1 patent/year company"]
+jpeg("figures/companies/onepatent_company_market.jpeg", width = 500, height = 500)
+ai_patents_clean_size[,mean(size == "1 patent/year company"), by = "pub_y"] %>% 
+  ggplot(aes(x = pub_y, y = V1)) +
+  geom_line() + 
+  ggtitle("Proportion of the Patent Market Occupied by 1-Patent Companies") +
+  labs(y= "Proportion of Patent Market", x = "Publication Year") +
+  scale_colour_manual(values = rev(custom_cols_9)) +
+  scale_size_manual(values = c("TRUE" = 1, "FALSE" = .4)) +
+  theme(legend.title = element_text(colour="black", size=10, face="bold"),
+        plot.title = element_text(hjust = 0.5, size = 15)) +
+  guides(size = "none")
+dev.off()
+
+long_small1 <- melt(ai_patents_clean_size[size == "1 patent/year company"][,lapply(.SD,mean),by = "pub_y", 
+                                                                           .SDcols = pred_cols],
+                    id.vars = "pub_y", variable.name = "type", value.name = "prop_patents")
+long_small1[, type := gsub("predict50_", "", type)]
+
+jpeg("figures/companies/onepatent_company_aitype.jpeg", width = 500, height = 500)
+long_small1 %>% 
+  ggplot(aes(x = pub_y, y = prop_patents, group = type, color = type)) +
+  geom_line() + 
+  ggtitle("Proportion of 1-Patent Company Patents by AI Type") +
+  labs(y= "Proportion of Patent Market", x = "Publication Year", fill = "AI Type") +
+  scale_colour_manual(values = rev(custom_cols_9)) +
+  scale_size_manual(values = c("TRUE" = 1, "FALSE" = .4)) +
+  theme(legend.title = element_text(colour="black", size=10, face="bold"),
+        plot.title = element_text(hjust = 0.5, size = 15)) +
+  guides(size = "none")
+dev.off()
+
+ 
+# median_ai_comps <- ai_patents_clean[,.N, by = c("assignee_id", "pub_y")][N > 1 & N <= 10]
+# median_ai_comps$size <- "2-10 patent/year company"
+# ai_patents_clean_size2 <- merge.data.table(ai_patents_clean, median_ai_comps[,-"N"], by = c("assignee_id", "pub_y"),
+#                                           all.x = TRUE)
+# ai_patents_clean_size2[is.na(size),size:="not 2-10 patent/year company"]
+# ai_patents_clean_size2[,mean(size == "2-10 patent/year company"), by = "pub_y"] %>% 
+#   ggplot(aes(x = pub_y, y = V1)) +
+#   geom_line() + 
+#   ggtitle("Proportion of the Market Occupied by Top Companies") +
+#   labs(y= "Proportion of Patent Market", x = "Publication Year", fill = "Company Category") +
+#   scale_colour_manual(values = rev(custom_cols_9)) +
+#   scale_size_manual(values = c("TRUE" = 1, "FALSE" = .4)) +
+#   theme(legend.title = element_text(colour="black", size=10, face="bold"),
+#         plot.title = element_text(hjust = 0.5, size = 15)) +
+#   guides(size = "none")
